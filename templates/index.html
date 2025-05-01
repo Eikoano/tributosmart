@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>TributoSmart AI</title>
+  <script>
+    async function enviarFormulario(event) {
+      event.preventDefault();
+      const form = event.target;
+      const dados = {
+        cnae: form.cnae.value,
+        faturamento_anual: parseFloat(form.faturamento_anual.value),
+        folha_pagamento: parseFloat(form.folha_pagamento.value),
+        custos_operacionais: parseFloat(form.custos_operacionais.value),
+        estado: form.estado.value,
+        municipio: form.municipio.value,
+        tipo_operacao: form.tipo_operacao.value,
+        percentual_vendas_outros_estados: parseFloat(form.percentual.value)
+      };
+
+      const resposta = await fetch("/analise-tributaria", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+      });
+
+      const resultado = await resposta.json();
+      document.getElementById("resultado").innerText = JSON.stringify(resultado, null, 2);
+    }
+  </script>
+</head>
+<body style="font-family:sans-serif; margin:2rem;">
+  <h1>TributoSmart AI</h1>
+  <form onsubmit="enviarFormulario(event)">
+    <label>CNAE: <input name="cnae" required></label><br><br>
+    <label>Faturamento Anual: <input name="faturamento_anual" required></label><br><br>
+    <label>Folha de Pagamento: <input name="folha_pagamento" required></label><br><br>
+    <label>Custos Operacionais: <input name="custos_operacionais" required></label><br><br>
+    <label>Estado: <input name="estado" required></label><br><br>
+    <label>Município: <input name="municipio" required></label><br><br>
+    <label>Tipo de Operação: <input name="tipo_operacao" required></label><br><br>
+    <label>% Vendas para outros estados: <input name="percentual" required></label><br><br>
+    <button type="submit">Analisar</button>
+  </form>
+
+  <h2>Resultado:</h2>
+  <pre id="resultado" style="background:#eee;padding:1rem;"></pre>
+</body>
+</html>
