@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>PLANEJAMENTO TRIBUTÁRIO - EIKON SOLUÇÕES</title>
+  <meta charset="UTF-8">
+  <title>EIKON SOLUÇÕES - PLANEJAMENTO TRIBUTÁRIO</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -71,25 +71,10 @@
 <body>
   <header>
     <img src="/static/logo.png" alt="TributoSmart Logo" />
-    <h1>PLANEJAMENTO TRIBUTÁRIO AI</h1>
+    <h1>EIKON SOLUÇÕES - PLANEJAMENTO TRIBUTÁRIO</h1>
   </header>
 
-  <form onsubmit="enviarFormulario(event)">
-    <label>CNAE: <input name="cnae" required pattern="\\d{7}" title="Digite 7 números" /></label><br>
-    <label>Faturamento Anual: <input name="faturamento_anual" type="number" min="1000" required /></label><br>
-    <label>Folha de Pagamento: <input name="folha_pagamento" type="number" min="0" required /></label><br>
-    <label>Custos Operacionais: <input name="custos_operacionais" type="number" min="0" required /></label><br>
-    <label>Estado: <input name="estado" maxlength="2" required pattern="[A-Z]{2}" title="Ex: SP, MG..." /></label><br>
-    <label>Município: <input name="municipio" required /></label><br>
-    <label>Tipo de Operação: <input name="tipo_operacao" required /></label><br>
-    <label>% Vendas para outros estados: <input name="percentual" type="number" min="0" max="100" required /></label><br>
-    <label>Meta de Carga (%): <input name="meta_carga_tributaria" type="number" min="1" max="100" required /></label><br>
-    <label>Estados Simulação (SP, MG...): <input name="estados_simulacao" required /></label><br>
-
-    <button type="submit">Analisar</button>
-  </form>
-
-  <pre id="resultado"></pre>
+  <!-- SEU FORMULÁRIO VEM AQUI -->
 
   <section id="links-legais">
     <h3>🔗 Fontes Oficiais</h3>
@@ -112,38 +97,5 @@
       <li><a href="https://recifeemdia.recife.pe.gov.br/" target="_blank">Portarias e Decretos Municipais — Recife em Dia</a></li>
     </ul>
   </section>
-
-  <script>
-    async function enviarFormulario(e) {
-      e.preventDefault();
-      const form = e.target;
-      const dados = {
-        cnae: form.cnae.value,
-        faturamento_anual: parseFloat(form.faturamento_anual.value),
-        folha_pagamento: parseFloat(form.folha_pagamento.value),
-        custos_operacionais: parseFloat(form.custos_operacionais.value),
-        estado: form.estado.value.toUpperCase(),
-        municipio: form.municipio.value,
-        tipo_operacao: form.tipo_operacao.value,
-        percentual: parseFloat(form.percentual.value),
-        meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
-        estados_simulacao: form.estados_simulacao.value.split(",").map(e => e.trim().toUpperCase())
-      };
-
-      const resposta = await fetch("/analise-tributaria", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados)
-      });
-
-      const resultado = await resposta.json();
-
-      document.getElementById("resultado").innerText =
-        `✅ Regime: ${resultado.regime_recomendado}\n` +
-        `🧾 Carga: ${resultado.carga_calculada}%\n` +
-        `📍 Estado: ${resultado.estado_recomendado}\n` +
-        `💡 Justificativa: ${resultado.justificativa}`;
-    }
-  </script>
 </body>
 </html>
