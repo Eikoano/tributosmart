@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>TributoSmart AI</title>
+  <meta charset="UTF-8" />
+  <title>PLANEJAMENTO TRIBUTÁRIO AI</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -70,12 +70,12 @@
 </head>
 <body>
   <header>
-    <img src="/static/logo.png" alt="TributoSmart Logo">
-    <h1>TributoSmart AI</h1>
+    <img src="/static/logo.png" alt="TributoSmart Logo" />
+    <h1>PLANEJAMENTO TRIBUTÁRIO AI</h1>
   </header>
 
   <form onsubmit="enviarFormulario(event)">
-    <label>CNAE: <input name="cnae" required pattern="\d{7}" title="Digite 7 números" /></label><br>
+    <label>CNAE: <input name="cnae" required pattern="\\d{7}" title="Digite 7 números" /></label><br>
     <label>Faturamento Anual: <input name="faturamento_anual" type="number" min="1000" required /></label><br>
     <label>Folha de Pagamento: <input name="folha_pagamento" type="number" min="0" required /></label><br>
     <label>Custos Operacionais: <input name="custos_operacionais" type="number" min="0" required /></label><br>
@@ -85,12 +85,11 @@
     <label>% Vendas para outros estados: <input name="percentual" type="number" min="0" max="100" required /></label><br>
     <label>Meta de Carga (%): <input name="meta_carga_tributaria" type="number" min="1" max="100" required /></label><br>
     <label>Estados Simulação (SP, MG...): <input name="estados_simulacao" required /></label><br>
+
     <button type="submit">Analisar</button>
   </form>
 
-  <div id="resultado"></div>
-  <div id="regimes"></div>
-  <div id="simulacoes"></div>
+  <pre id="resultado"></pre>
 
   <section id="links-legais">
     <h3>🔗 Fontes Oficiais</h3>
@@ -140,17 +139,10 @@
       const resultado = await resposta.json();
 
       document.getElementById("resultado").innerText =
-        `✅ Regime Recomendado: ${resultado.regime_recomendado}\n` +
+        `✅ Regime: ${resultado.regime_recomendado}\n` +
+        `🧾 Carga: ${resultado.carga_calculada}%\n` +
         `📍 Estado: ${resultado.estado_recomendado}\n` +
-        `🧾 Carga Estimada: ${resultado.carga_calculada}%\n` +
         `💡 Justificativa: ${resultado.justificativa}`;
-
-      const regimesHtml = resultado.detalhamento_regimes.map(r =>
-        `<li><strong>${r.regime}</strong>: ${r.carga}% — ${r.justificativa}</li>`
-      ).join("");
-
-      document.getElementById("regimes").innerHTML =
-        `<h4>Comparativo de Regimes:</h4><ul>${regimesHtml}</ul>`;
     }
   </script>
 </body>
