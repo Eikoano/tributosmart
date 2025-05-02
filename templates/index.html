@@ -1,55 +1,149 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8" />
-    <title>TributoSmart AI</title>
+  <meta charset="UTF-8">
+  <title>TributoSmart AI</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 2rem;
+      background-color: #f5f5f5;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+    header img {
+      height: 60px;
+    }
+    h1 {
+      color: #1e3a8a;
+      margin: 0;
+    }
+    form {
+      background: #fff;
+      padding: 1.5rem;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    input {
+      width: 100%;
+      margin-bottom: 12px;
+      padding: 6px;
+    }
+    button {
+      background: #1e3a8a;
+      color: white;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #3b5998;
+    }
+    #resultado, #tabela-detalhada {
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-top: 2rem;
+      border: 1px solid #ccc;
+    }
+  </style>
 </head>
 <body>
-    <h1>Simulador Tributário Avançado</h1>
-    <form onsubmit="enviarFormulario(event)">
-        <label>CNAE: <input name="cnae" required /></label><br />
-        <label>Faturamento Anual: <input name="faturamento_anual" type="number" required /></label><br />
-        <label>Folha de Pagamento: <input name="folha_pagamento" type="number" required /></label><br />
-        <label>Custos Operacionais: <input name="custos_operacionais" type="number" required /></label><br />
-        <label>Estado atual: <input name="estado" required /></label><br />
-        <label>Município: <input name="municipio" required /></label><br />
-        <label>Tipo de Operação: <input name="tipo_operacao" required /></label><br />
-        <label>% Vendas Fora do Estado: <input name="percentual_vendas_outros_estados" type="number" required /></label><br />
-        <label>Meta de Carga Tributária (%): <input name="meta_carga_tributaria" type="number" required /></label><br />
-        <label>Estados para Simulação (ex: SP, MG, ES): <input name="estados_simulacao" required /></label><br />
-        <button type="submit">Simular</button>
-    </form>
+  <header>
+    <img src="/static/logo.png" alt="TributoSmart Logo">
+    <h1>TributoSmart AI</h1>
+  </header>
 
-    <h2>Resultado:</h2>
-    <pre id="resultado">...</pre>
+  <form onsubmit="enviarFormulario(event)">
+    <label>CNAE: <input name="cnae" required pattern="\d{7}" title="Digite 7 números" /></label><br>
+    <label>Faturamento Anual: <input name="faturamento_anual" type="number" min="1000" required /></label><br>
+    <label>Folha de Pagamento: <input name="folha_pagamento" type="number" min="0" required /></label><br>
+    <label>Custos Operacionais: <input name="custos_operacionais" type="number" min="0" required /></label><br>
+    <label>Estado: <input name="estado" maxlength="2" required pattern="[A-Z]{2}" title="Ex: SP, MG..." /></label><br>
+    <label>Município: <input name="municipio" required /></label><br>
+    <label>Tipo de Operação: <input name="tipo_operacao" required /></label><br>
+    <label>% Vendas para outros estados: <input name="percentual" type="number" min="0" max="100" required /></label><br>
+    <label>Meta de Carga (%): <input name="meta_carga_tributaria" type="number" min="1" max="100" required /></label><br>
+    <label>Estados Simulação (SP, MG...): <input name="estados_simulacao" required /></label><br>
+    <button type="submit">Analisar</button>
+  </form>
 
-    <script>
-        async function enviarFormulario(event) {
-            event.preventDefault();
-            const form = event.target;
+  <div id="resultado"></div>
+  <div id="tabela-detalhada"></div>
 
-            const dados = {
-                cnae: form.cnae.value,
-                faturamento_anual: parseFloat(form.faturamento_anual.value),
-                folha_pagamento: parseFloat(form.folha_pagamento.value),
-                custos_operacionais: parseFloat(form.custos_operacionais.value),
-                estado: form.estado.value,
-                municipio: form.municipio.value,
-                tipo_operacao: form.tipo_operacao.value,
-                percentual_vendas_outros_estados: parseFloat(form.percentual_vendas_outros_estados.value),
-                meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
-                estados_simulacao: form.estados_simulacao.value.split(',').map(e => e.trim())
-            };
+  <hr>
+  <section style="margin-top: 2rem;">
+    <h2>📚 Legislação Tributária</h2>
+    <h3>📘 Federal</h3>
+    <ul>
+      <li><strong>Simples Nacional</strong>: <a href="https://www.gov.br/receitafederal/pt-br/assuntos/simples-nacional" target="_blank">Portal da Receita Federal</a></li>
+      <li><strong>Reforma Tributária (EC 132/2023)</strong>: <a href="https://www.gov.br/fazenda/pt-br/acesso-a-informacao/acoes-e-programas/reforma-tributaria" target="_blank">Ministério da Fazenda</a></li>
+      <li><strong>Lei Complementar nº 214/2025</strong>: <a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp214.htm" target="_blank">Planalto</a></li>
+    </ul>
+    <h3>🏛️ Estadual (PE)</h3>
+    <ul>
+      <li><strong>Lei 15.730/2016 (ICMS-PE)</strong>: <a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Paginas/Legislacao-Tributaria-Estadual.aspx" target="_blank">SEFAZ-PE</a></li>
+      <li><strong>Decreto 44.650/2017 (Regulamento ICMS)</strong>: <a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Paginas/Legislacao-Tributaria-Estadual.aspx" target="_blank">SEFAZ-PE</a></li>
+    </ul>
+    <h3>🏙️ Municipal (Recife)</h3>
+    <ul>
+      <li><strong>Código Tributário Municipal</strong>: <a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Prefeitura do Recife</a></li>
+      <li><strong>Portarias e Decretos Municipais</strong>: <a href="https://recifeemdia.recife.pe.gov.br/legislacaoTributaria" target="_blank">Recife em Dia</a></li>
+    </ul>
+  </section>
 
-            const resposta = await fetch("/analise-tributaria", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dados)
-            });
+  <script>
+    async function enviarFormulario(event) {
+      event.preventDefault();
+      const form = event.target;
 
-            const resultado = await resposta.json();
-            document.getElementById("resultado").textContent = JSON.stringify(resultado, null, 2);
-        }
-    </script>
+      const dados = {
+        cnae: form.cnae.value,
+        faturamento_anual: parseFloat(form.faturamento_anual.value),
+        folha_pagamento: parseFloat(form.folha_pagamento.value),
+        custos_operacionais: parseFloat(form.custos_operacionais.value),
+        estado: form.estado.value.toUpperCase(),
+        municipio: form.municipio.value,
+        tipo_operacao: form.tipo_operacao.value,
+        percentual: parseFloat(form.percentual.value),
+        meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
+        estados_simulacao: form.estados_simulacao.value.split(',').map(e => e.trim().toUpperCase())
+      };
+
+      const resposta = await fetch("/analise-tributaria", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+      });
+
+      const resultado = await resposta.json();
+
+      document.getElementById("resultado").innerText =
+        `🎯 Meta de Carga: ${resultado.meta}%\n\n` +
+        `✅ Recomendado:\n` +
+        `📍 Estado: ${resultado.recomendacao.estado}\n` +
+        `📊 Regime: ${resultado.recomendacao.regime}\n` +
+        `🧾 Carga: ${resultado.recomendacao.carga}%\n` +
+        `💬 Justificativa: ${resultado.recomendacao.justificativa}`;
+
+      let tabela = `<h3>📄 Simulações Detalhadas</h3>`;
+      resultado.simulacoes.forEach(sim => {
+        tabela += `<strong>${sim.estado}</strong><ul>`;
+        sim.regimes.forEach(r => {
+          const destaque = (r.nome === sim.melhor.nome) ? "✅ " : "";
+          tabela += `<li>${destaque}${r.nome}: ${r.carga}%</li>`;
+        });
+        tabela += `<li><em>${sim.justificativa}</em></li>`;
+        tabela += `</ul><hr>`;
+      });
+      document.getElementById("tabela-detalhada").innerHTML = tabela;
+    }
+  </script>
 </body>
 </html>
