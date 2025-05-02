@@ -1,49 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>TributoSmart AI</title>
-  <script>
-    async function enviarFormulario(event) {
-      event.preventDefault();
-      const form = event.target;
-      const dados = {
-        cnae: form.cnae.value,
-        faturamento_anual: parseFloat(form.faturamento_anual.value),
-        folha_pagamento: parseFloat(form.folha_pagamento.value),
-        custos_operacionais: parseFloat(form.custos_operacionais.value),
-        estado: form.estado.value,
-        municipio: form.municipio.value,
-        tipo_operacao: form.tipo_operacao.value,
-        percentual_vendas_outros_estados: parseFloat(form.percentual.value)
-      };
-
-      const resposta = await fetch("/analise-tributaria", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados)
-      });
-
-      const resultado = await resposta.json();
-      document.getElementById("resultado").innerText = JSON.stringify(resultado, null, 2);
-    }
-  </script>
+    <meta charset="UTF-8" />
+    <title>TributoSmart AI</title>
 </head>
-<body style="font-family:sans-serif; margin:2rem;">
-  <h1>TributoSmart AI</h1>
-  <form onsubmit="enviarFormulario(event)">
-    <label>CNAE: <input name="cnae" required></label><br><br>
-    <label>Faturamento Anual: <input name="faturamento_anual" required></label><br><br>
-    <label>Folha de Pagamento: <input name="folha_pagamento" required></label><br><br>
-    <label>Custos Operacionais: <input name="custos_operacionais" required></label><br><br>
-    <label>Estado: <input name="estado" required></label><br><br>
-    <label>Município: <input name="municipio" required></label><br><br>
-    <label>Tipo de Operação: <input name="tipo_operacao" required></label><br><br>
-    <label>% Vendas para outros estados: <input name="percentual" required></label><br><br>
-    <button type="submit">Analisar</button>
-  </form>
+<body>
+    <h1>Simulador Tributário Avançado</h1>
+    <form onsubmit="enviarFormulario(event)">
+        <label>CNAE: <input name="cnae" required /></label><br />
+        <label>Faturamento Anual: <input name="faturamento_anual" type="number" required /></label><br />
+        <label>Folha de Pagamento: <input name="folha_pagamento" type="number" required /></label><br />
+        <label>Custos Operacionais: <input name="custos_operacionais" type="number" required /></label><br />
+        <label>Estado atual: <input name="estado" required /></label><br />
+        <label>Município: <input name="municipio" required /></label><br />
+        <label>Tipo de Operação: <input name="tipo_operacao" required /></label><br />
+        <label>% Vendas Fora do Estado: <input name="percentual_vendas_outros_estados" type="number" required /></label><br />
+        <label>Meta de Carga Tributária (%): <input name="meta_carga_tributaria" type="number" required /></label><br />
+        <label>Estados para Simulação (ex: SP, MG, ES): <input name="estados_simulacao" required /></label><br />
+        <button type="submit">Simular</button>
+    </form>
 
-  <h2>Resultado:</h2>
-  <pre id="resultado" style="background:#eee;padding:1rem;"></pre>
+    <h2>Resultado:</h2>
+    <pre id="resultado">...</pre>
+
+    <script>
+        async function enviarFormulario(event) {
+            event.preventDefault();
+            const form = event.target;
+
+            const dados = {
+                cnae: form.cnae.value,
+                faturamento_anual: parseFloat(form.faturamento_anual.value),
+                folha_pagamento: parseFloat(form.folha_pagamento.value),
+                custos_operacionais: parseFloat(form.custos_operacionais.value),
+                estado: form.estado.value,
+                municipio: form.municipio.value,
+                tipo_operacao: form.tipo_operacao.value,
+                percentual_vendas_outros_estados: parseFloat(form.percentual_vendas_outros_estados.value),
+                meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
+                estados_simulacao: form.estados_simulacao.value.split(',').map(e => e.trim())
+            };
+
+            const resposta = await fetch("/analise-tributaria", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dados)
+            });
+
+            const resultado = await resposta.json();
+            document.getElementById("resultado").textContent = JSON.stringify(resultado, null, 2);
+        }
+    </script>
 </body>
 </html>
