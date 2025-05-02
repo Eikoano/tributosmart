@@ -52,6 +52,20 @@
       margin-top: 2rem;
       border: 1px solid #ccc;
     }
+    #links-legais {
+      margin-top: 2rem;
+      padding: 1rem;
+      background: #f0f0f0;
+      border-radius: 10px;
+    }
+    #links-legais h4 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      color: #1e3a8a;
+    }
+    #links-legais ul {
+      padding-left: 1.2rem;
+    }
   </style>
 </head>
 <body>
@@ -77,6 +91,27 @@
   <div id="resultado"></div>
   <div id="regimes"></div>
   <div id="simulacoes"></div>
+
+  <section id="links-legais">
+    <h3>📚 Legislação e Órgãos Oficiais</h3>
+
+    <h4>🟢 Federal</h4>
+    <ul>
+      <li><a href="https://www.gov.br/receitafederal/pt-br/assuntos/simples-nacional" target="_blank">Portal do Simples Nacional</a></li>
+      <li><a href="https://www.gov.br/receitafederal" target="_blank">Receita Federal do Brasil</a></li>
+    </ul>
+
+    <h4>🔵 Estadual</h4>
+    <ul>
+      <li><a href="https://portal.fazenda.sp.gov.br/" target="_blank">Secretaria da Fazenda - São Paulo (SEFAZ-SP)</a></li>
+      <li><a href="https://www.fazenda.mg.gov.br/" target="_blank">Secretaria da Fazenda - Minas Gerais (SEF-MG)</a></li>
+    </ul>
+
+    <h4>🔴 Municipal</h4>
+    <ul>
+      <li><a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Código Tributário Municipal - Recife</a></li>
+    </ul>
+  </section>
 
   <script>
     document.getElementById("formulario").addEventListener("submit", async function(event) {
