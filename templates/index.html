@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
   <meta charset="UTF-8">
-  <title>EIKON SOLUÇÕES - PLANEJAMENTO TRIBUTÁRIO</title>
+  <title>TributoSmart AI</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
@@ -29,7 +29,7 @@
       border: 1px solid #ccc;
       box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
-    input {
+    input, select {
       width: 100%;
       margin-bottom: 12px;
       padding: 6px;
@@ -41,86 +41,61 @@
       border: none;
       border-radius: 6px;
       cursor: pointer;
+      margin-right: 10px;
     }
     button:hover {
       background: #3b5998;
     }
-    #resultado, #regimes, #simulacoes {
+    #resultado {
       background: #ffffff;
       padding: 1rem;
       border-radius: 10px;
       margin-top: 2rem;
       border: 1px solid #ccc;
-    }
-    #links-legais {
-      margin-top: 2rem;
-      padding: 1rem;
-      background: #f8f8f8;
-      border-radius: 10px;
-    }
-    #links-legais h4 {
-      margin-top: 1rem;
-      margin-bottom: 0.5rem;
-      color: #1e3a8a;
-    }
-    #links-legais ul {
-      padding-left: 1.2rem;
+      white-space: pre-wrap;
     }
   </style>
 </head>
 <body>
   <header>
-    <img src="/static/logo.png" alt="TributoSmart Logo">
-    <h1>EIKON SOLUÇÕES - PLANEJAMENTO TRIBUTÁRIO</h1>
+    <img src="/static/logo.png" alt="Logo da Empresa">
+    <h1>TributoSmart AI</h1>
   </header>
 
   <form onsubmit="enviarFormulario(event)">
     <label>CNAE: <input name="cnae" required pattern="\d{7}" title="Digite 7 números" /></label><br>
-    <label>Faturamento Anual: <input name="faturamento_anual" type="number" min="1000" required /></label><br>
-    <label>Folha de Pagamento: <input name="folha_pagamento" type="number" min="0" required /></label><br>
-    <label>Custos Operacionais: <input name="custos_operacionais" type="number" min="0" required /></label><br>
+    <label>Faturamento Anual: <input name="faturamento_anual" type="number" required /></label><br>
+    <label>Folha de Pagamento: <input name="folha_pagamento" type="number" required /></label><br>
+    <label>Custos Operacionais: <input name="custos_operacionais" type="number" required /></label><br>
     <label>Estado: <input name="estado" maxlength="2" required pattern="[A-Z]{2}" title="Ex: SP, MG..." /></label><br>
     <label>Município: <input name="municipio" required /></label><br>
     <label>Tipo de Operação: <input name="tipo_operacao" required /></label><br>
-    <label>% Vendas para outros estados: <input name="percentual" type="number" min="0" max="100" required /></label><br>
-    <label>Meta de Carga (%): <input name="meta_carga_tributaria" type="number" min="1" max="100" required /></label><br>
+    <label>% Vendas para outros estados: <input name="percentual" type="number" required /></label><br>
+    <label>Meta de Carga (%): <input name="meta_carga_tributaria" type="number" required /></label><br>
     <label>Estados Simulação (SP, MG...): <input name="estados_simulacao" required /></label><br>
+    <label>Tipo de Atividade:
+      <select name="tipo_atividade" required>
+        <option value="comercio">Comércio</option>
+        <option value="industria">Indústria</option>
+        <option value="servico">Serviço</option>
+        <option value="agropecuaria">Agropecuária</option>
+      </select>
+    </label><br>
+    <label>Número de Funcionários: <input name="num_funcionarios" type="number" required /></label><br>
 
     <button type="submit">Analisar</button>
-    <button onclick="baixarPDF()">📄 Baixar Relatório em PDF</button>
+    <button type="button" onclick="gerarPDF()">Gerar PDF</button>
   </form>
 
-  <div id="resultado"></div>
-  <div id="regimes"></div>
-  <div id="simulacoes"></div>
-
-  <section id="links-legais">
-    <h3>🔗 Fontes Oficiais</h3>
-
-    <h4>🟢 Federal</h4>
-    <ul>
-      <li><a href="https://www.gov.br/fazenda/pt-br" target="_blank">Reforma Tributária e Emenda Constitucional 132/2023 — Ministério da Fazenda</a></li>
-      <li><a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/Lcp214.htm" target="_blank">Lei Complementar nº 214/2025 — Planalto</a></li>
-    </ul>
-
-    <h4>🔵 Estadual (Pernambuco)</h4>
-    <ul>
-      <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/legislacao/leis/lei_15730_2016.htm" target="_blank">ICMS - Lei 15.730/2016 — SEFAZ-PE</a></li>
-      <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Pages/ricms.aspx" target="_blank">Regulamento do ICMS - Decreto 44.650/2017 — SEFAZ-PE</a></li>
-    </ul>
-
-    <h4>🔴 Municipal (Recife)</h4>
-    <ul>
-      <li><a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Código Tributário Municipal — Prefeitura do Recife</a></li>
-      <li><a href="https://recifeemdia.recife.pe.gov.br/" target="_blank">Portarias e Decretos Municipais — Recife em Dia</a></li>
-    </ul>
-  </section>
+  <pre id="resultado"></pre>
 
   <script>
+    let dadosGlobais = null;
+
     async function enviarFormulario(e) {
       e.preventDefault();
       const form = e.target;
-      const dados = {
+      dadosGlobais = {
         cnae: form.cnae.value,
         faturamento_anual: parseFloat(form.faturamento_anual.value),
         folha_pagamento: parseFloat(form.folha_pagamento.value),
@@ -130,64 +105,46 @@
         tipo_operacao: form.tipo_operacao.value,
         percentual: parseFloat(form.percentual.value),
         meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
-        estados_simulacao: form.estados_simulacao.value.split(",").map(e => e.trim().toUpperCase())
+        estados_simulacao: form.estados_simulacao.value.split(',').map(e => e.trim().toUpperCase()),
+        tipo_atividade: form.tipo_atividade.value,
+        num_funcionarios: parseInt(form.num_funcionarios.value)
       };
 
       const resposta = await fetch("/analise-tributaria", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados)
+        body: JSON.stringify(dadosGlobais)
       });
 
       const resultado = await resposta.json();
 
       document.getElementById("resultado").innerText =
-        `✅ Regime Recomendado: ${resultado.regime_recomendado}\n` +
-        `📍 Estado Ideal: ${resultado.estado_recomendado}\n` +
-        `📊 Carga Estimada: ${resultado.carga_calculada}%\n` +
+        `✅ Regime: ${resultado.regime_recomendado}\n` +
+        `🧾 Carga: ${resultado.carga_calculada}%\n` +
+        `📍 Estado: ${resultado.estado_recomendado}\n` +
         `💡 Justificativa: ${resultado.justificativa}`;
-
-      document.getElementById("regimes").innerHTML = `<h4>📘 Comparativo de Regimes</h4><ul>${
-        resultado.detalhamento_regimes.map(r =>
-          `<li><strong>${r.regime}</strong>: ${r.carga}% - ${r.justificativa}</li>`
-        ).join("")
-      }</ul>`;
-
-      document.getElementById("simulacoes").innerHTML = `<h4>🔍 Simulações por Estado</h4><ul>${
-        resultado.simulacoes.map(s =>
-          `<li>${s.estado}: ${s.carga_efetiva}% (${s.regime})</li>`
-        ).join("")
-      }</ul>`;
     }
-  </script>
-  <script>
-    async function baixarPDF() {
-      const form = document.querySelector("form");
-      const dados = {
-        cnae: form.cnae.value,
-        faturamento_anual: parseFloat(form.faturamento_anual.value),
-        folha_pagamento: parseFloat(form.folha_pagamento.value),
-        custos_operacionais: parseFloat(form.custos_operacionais.value),
-        estado: form.estado.value.toUpperCase(),
-        municipio: form.municipio.value,
-        tipo_operacao: form.tipo_operacao.value,
-        percentual: parseFloat(form.percentual.value),
-        meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
-        estados_simulacao: form.estados_simulacao.value.split(",").map(e => e.trim().toUpperCase())
-      };
-  
-      const response = await fetch("/gerar-pdf", {
+
+    function gerarPDF() {
+      if (!dadosGlobais) {
+        alert("Realize a análise primeiro para gerar o PDF.");
+        return;
+      }
+
+      fetch("/gerar-pdf", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(dados)
-      });
-  
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "relatorio_tributario.pdf";
-      a.click();
+        body: JSON.stringify(dadosGlobais)
+      })
+        .then(response => response.blob())
+        .then(blob => {
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "relatorio_tributario.pdf";
+          a.click();
+          URL.revokeObjectURL(url);
+        });
     }
   </script>
 </body>
