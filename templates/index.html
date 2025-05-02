@@ -74,98 +74,28 @@
     <h1>TributoSmart AI</h1>
   </header>
 
-  <form id="formulario">
-    <label>CNAE: <input name="cnae" required pattern="\d{7}" title="Digite 7 números" /></label><br>
-    <label>Faturamento Anual: <input name="faturamento_anual" type="number" min="1000" required /></label><br>
-    <label>Folha de Pagamento: <input name="folha_pagamento" type="number" min="0" required /></label><br>
-    <label>Custos Operacionais: <input name="custos_operacionais" type="number" min="0" required /></label><br>
-    <label>Estado: <input name="estado" maxlength="2" required pattern="[A-Z]{2}" title="Ex: SP, MG..." /></label><br>
-    <label>Município: <input name="municipio" required /></label><br>
-    <label>Tipo de Operação: <input name="tipo_operacao" required /></label><br>
-    <label>% Vendas para outros estados: <input name="percentual" type="number" min="0" max="100" required /></label><br>
-    <label>Meta de Carga (%): <input name="meta_carga_tributaria" type="number" min="1" max="100" required /></label><br>
-    <label>Estados Simulação (SP, MG...): <input name="estados_simulacao" required /></label><br>
-    <button type="submit">Analisar</button>
-  </form>
-
-  <div id="resultado"></div>
-  <div id="regimes"></div>
-  <div id="simulacoes"></div>
+  <!-- ...formulário e resultados... -->
 
   <section id="links-legais">
-    <h3>📚 Legislação e Órgãos Oficiais</h3>
+    <h3>🔗 Fontes Oficiais</h3>
 
     <h4>🟢 Federal</h4>
     <ul>
-      <li><a href="https://www.gov.br/receitafederal/pt-br/assuntos/simples-nacional" target="_blank">Portal do Simples Nacional</a></li>
-      <li><a href="https://www.gov.br/receitafederal" target="_blank">Receita Federal do Brasil</a></li>
+      <li><a href="https://www.gov.br/fazenda/pt-br" target="_blank">Reforma Tributária e Emenda Constitucional 132/2023 — Ministério da Fazenda</a></li>
+      <li><a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/Lcp214.htm" target="_blank">Lei Complementar nº 214/2025 — Planalto</a></li>
     </ul>
 
-    <h4>🔵 Estadual</h4>
+    <h4>🔵 Estadual (Pernambuco)</h4>
     <ul>
-      <li><a href="https://portal.fazenda.sp.gov.br/" target="_blank">Secretaria da Fazenda - São Paulo (SEFAZ-SP)</a></li>
-      <li><a href="https://www.fazenda.mg.gov.br/" target="_blank">Secretaria da Fazenda - Minas Gerais (SEF-MG)</a></li>
+      <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/legislacao/leis/lei_15730_2016.htm" target="_blank">ICMS - Lei 15.730/2016 — SEFAZ-PE</a></li>
+      <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Pages/ricms.aspx" target="_blank">Regulamento do ICMS - Decreto 44.650/2017 — SEFAZ-PE</a></li>
     </ul>
 
-    <h4>🔴 Municipal</h4>
+    <h4>🔴 Municipal (Recife)</h4>
     <ul>
-      <li><a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Código Tributário Municipal - Recife</a></li>
+      <li><a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Código Tributário Municipal — Prefeitura do Recife</a></li>
+      <li><a href="https://recifeemdia.recife.pe.gov.br/" target="_blank">Portarias e Decretos Municipais — Recife em Dia</a></li>
     </ul>
   </section>
-
-  <script>
-    document.getElementById("formulario").addEventListener("submit", async function(event) {
-      event.preventDefault();
-      const form = event.target;
-
-      const dados = {
-        cnae: form.cnae.value,
-        faturamento_anual: parseFloat(form.faturamento_anual.value),
-        folha_pagamento: parseFloat(form.folha_pagamento.value),
-        custos_operacionais: parseFloat(form.custos_operacionais.value),
-        estado: form.estado.value.toUpperCase(),
-        municipio: form.municipio.value,
-        tipo_operacao: form.tipo_operacao.value,
-        percentual: parseFloat(form.percentual.value),
-        meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
-        estados_simulacao: form.estados_simulacao.value.split(',').map(e => e.trim().toUpperCase())
-      };
-
-      try {
-        const resposta = await fetch("/analise-tributaria", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(dados)
-        });
-
-        const resultado = await resposta.json();
-
-        document.getElementById("resultado").innerText =
-          `🎯 Meta de Carga: ${resultado.meta_carga_tributaria}%\n\n` +
-          `✅ Recomendado:\n` +
-          `📍 Estado: ${resultado.estado_recomendado}\n` +
-          `📊 Regime: ${resultado.regime_recomendado}\n` +
-          `🧾 Carga: ${resultado.carga_calculada}%\n` +
-          `💬 Justificativa: ${resultado.justificativa}`;
-
-        const lista = document.getElementById("regimes");
-        lista.innerHTML = "<h3>📊 Comparativo de Regimes:</h3><ul>";
-        resultado.detalhamento_regimes.forEach(r => {
-          lista.innerHTML += `<li>🧾 <strong>${r.regime}</strong>: ${r.carga}% — ${r.justificativa}</li>`;
-        });
-        lista.innerHTML += "</ul>";
-
-        const blocos = document.getElementById("simulacoes");
-        blocos.innerHTML = `<h3>📍 Simulações por Estado:</h3>`;
-        resultado.simulacoes.forEach(s => {
-          blocos.innerHTML += `<div><strong>${s.estado}</strong>: ${s.regime} - ${s.carga_efetiva}%<br><em>${s.justificativa}</em></div><hr>`;
-        });
-
-      } catch (error) {
-        document.getElementById("resultado").innerText = "❌ Erro ao calcular. Verifique os campos e tente novamente.";
-        console.error("Erro ao chamar a API:", error);
-      }
-    });
-  </script>
 </body>
 </html>
