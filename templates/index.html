@@ -87,6 +87,7 @@
     <label>Estados Simulação (SP, MG...): <input name="estados_simulacao" required /></label><br>
 
     <button type="submit">Analisar</button>
+    <button onclick="baixarPDF()">📄 Baixar Relatório em PDF</button>
   </form>
 
   <div id="resultado"></div>
@@ -157,6 +158,36 @@
           `<li>${s.estado}: ${s.carga_efetiva}% (${s.regime})</li>`
         ).join("")
       }</ul>`;
+    }
+  </script>
+  <script>
+    async function baixarPDF() {
+      const form = document.querySelector("form");
+      const dados = {
+        cnae: form.cnae.value,
+        faturamento_anual: parseFloat(form.faturamento_anual.value),
+        folha_pagamento: parseFloat(form.folha_pagamento.value),
+        custos_operacionais: parseFloat(form.custos_operacionais.value),
+        estado: form.estado.value.toUpperCase(),
+        municipio: form.municipio.value,
+        tipo_operacao: form.tipo_operacao.value,
+        percentual: parseFloat(form.percentual.value),
+        meta_carga_tributaria: parseFloat(form.meta_carga_tributaria.value),
+        estados_simulacao: form.estados_simulacao.value.split(",").map(e => e.trim().toUpperCase())
+      };
+  
+      const response = await fetch("/gerar-pdf", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(dados)
+      });
+  
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "relatorio_tributario.pdf";
+      a.click();
     }
   </script>
 </body>
