@@ -58,8 +58,8 @@
 </head>
 <body>
   <header>
-    <img src="/static/logo.png" alt="Logo da Empresa">
-    <h1>EIKON SOLUÇÕES-PLANEJAMENTO TRIBUTÁRIO</h1>
+    <img src="{{ url_for('static', path='logo.png') }}" alt="Logo da Empresa" height="60">
+    <h1>EIKON SOLUÇÕES - PLANEJAMENTO TRIBUTÁRIO</h1>
   </header>
 
   <form onsubmit="enviarFormulario(event)">
@@ -147,30 +147,28 @@
         });
     }
   </script>
-    <section id="links-legais">
-        <h3>🔗 Fontes Oficiais</h3>
-    
-        <h4>🟢 Federal</h4>
-        <ul>
-          <li><a href="https://www.gov.br/fazenda/pt-br" target="_blank">Reforma Tributária e Emenda Constitucional 132/2023 — Ministério da Fazenda</a></li>
-          <li><a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/Lcp214.htm" target="_blank">Lei Complementar nº 214/2025 — Planalto</a></li>
-        </ul>
-    
-        <h4>🔵 Estadual (Pernambuco)</h4>
-        <ul>
-          <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/legislacao/leis/lei_15730_2016.htm" target="_blank">ICMS - Lei 15.730/2016 — SEFAZ-PE</a></li>
-          <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Pages/ricms.aspx" target="_blank">Regulamento do ICMS - Decreto 44.650/2017 — SEFAZ-PE</a></li>
-        </ul>
-    
-        <h4>🔴 Municipal (Recife)</h4>
-        <ul>
-          <li><a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Código Tributário Municipal — Prefeitura do Recife</a></li>
-          <li><a href="https://recifeemdia.recife.pe.gov.br/" target="_blank">Portarias e Decretos Municipais — Recife em Dia</a></li>
-        </ul>
-      </section>
-      <header>
-        <img src="/static/logo.png" alt="Logo da Empresa" height="60">
-        <h1>EIKON SOLUÇÕES - PLANEJAMENTO TRIBUTÁRIO</h1>
-      </header>     
+
+  <section id="links-legais">
+    <h3>🔗 Fontes Oficiais</h3>
+
+    <h4>🟢 Federal</h4>
+    <ul>
+      <li><a href="https://www.gov.br/fazenda/pt-br" target="_blank">Reforma Tributária e Emenda Constitucional 132/2023 — Ministério da Fazenda</a></li>
+      <li><a href="https://www.planalto.gov.br/ccivil_03/leis/lcp/Lcp214.htm" target="_blank">Lei Complementar nº 214/2025 — Planalto</a></li>
+    </ul>
+
+    <h4>🔵 Estadual (Pernambuco)</h4>
+    <ul>
+      <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Documents/legislacao/leis/lei_15730_2016.htm" target="_blank">ICMS - Lei 15.730/2016 — SEFAZ-PE</a></li>
+      <li><a href="https://www.sefaz.pe.gov.br/Legislacao/Tributaria/Pages/ricms.aspx" target="_blank">Regulamento do ICMS - Decreto 44.650/2017 — SEFAZ-PE</a></li>
+    </ul>
+
+    <h4>🔴 Municipal (Recife)</h4>
+    <ul>
+      <li><a href="https://www2.recife.pe.gov.br/servico/codigo-tributario-municipal" target="_blank">Código Tributário Municipal — Prefeitura do Recife</a></li>
+      <li><a href="https://recifeemdia.recife.pe.gov.br/" target="_blank">Portarias e Decretos Municipais — Recife em Dia</a></li>
+    </ul>
+  </section>
+
 </body>
 </html>
