@@ -1,10 +1,8 @@
-# render.yaml inválido (para suspender o serviço no plano gratuito)
 services:
   - type: web
     name: tributossmartdoromeu
     env: python
-    buildCommand: ""  # <-- Não há build
-    startCommand: ""  # <-- Não há start (faz com que o deploy falhe)
+    buildCommand: ""
+    startCommand: ""
     repo: https://github.com/Eikoano/tributosmart.git
     branch: main
-
