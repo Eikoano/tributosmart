@@ -1,7 +1,10 @@
+# render.yaml inválido (para suspender o serviço no plano gratuito)
 services:
   - type: web
-    name: tributosmartdoromeu
+    name: tributossmartdoromeu
     env: python
-    buildCommand: pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port 10000
-    plan: free
+    buildCommand: ""  # <-- Não há build
+    startCommand: ""  # <-- Não há start (faz com que o deploy falhe)
+    repo: https://github.com/Eikoano/tributosmart.git
+    branch: main
+
